@@ -1,10 +1,10 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
-echo -e"\n# Add docker host
-eval $(ssh-agent)
+echo -e "\n# Add docker host
+eval \$(ssh-agent)
 ssh-add \$HOME/alpine/qemukey
 export DOCKER_HOST=ssh://root@localhost:2222
-DOCKER_INFO=$(docker info 2>&1)\n
+DOCKER_INFO=\$(docker info 2>&1)\n
 if [[ \$DOCKER_INFO == *'error during connect'* ]]; then
   echo '-> Connecting to docker daemon, wait for Alpine VM to boot... (WAIT)'
   screen
