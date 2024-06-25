@@ -7,24 +7,25 @@ pkg upgrade -y
 pkg install root-repo -y
 pkg install iproute2 openssh curl wget screen docker qemu-system-x86-64-headless qemu-utils -y
 
+USER=$(whoami)
+
 # Redefine user password
-echo "-> Set a new password for $(whoami)"
+echo "-> Set a new password for $USER"
 passwd
 
 echo -e "\n# Clean screens dead
-screen -wipe" >> $PREFIX/etc/bash.bashrc
+screen -wipe &> /dev/null" >> $PREFIX/etc/bash.bashrc
 
 echo -e "\n# Verify and run SSHD
-if pgrep sshd > /dev/null; then
+if pgrep sshd &> /dev/null; then
   echo '-> sshd running... (OK)'
 else
   echo '-> sshd starting... (WAIT)'
   sshd
 fi" >> $PREFIX/etc/bash.bashrc
 
-# 9999. Mount ssh command 
 IP_ADDRESS=$(ip route show | awk '{print $9}')
-read -rp "-> Continue configuration on this terminal (1), or use ssh conection (2)? [1]" SETUP_CONTINUE
+read -rp "-> Continue configuration on this terminal (1), or use ssh conection (2)? [1] " SETUP_CONTINUE
 
 if [[ $SETUP_CONTINUE == "1" ]]; then
   ./install_alpine.sh
