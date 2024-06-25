@@ -25,11 +25,11 @@ else
 fi" >> $PREFIX/etc/bash.bashrc
 
 IP_ADDRESS=$(ip route show | awk '{print $9}')
-read -rp "\n-> Continue configuration on this terminal (1), or use ssh conection (2)? [1] " SETUP_CONTINUE
+read -rp $'\n-> Continue configuration on this terminal(1), or use ssh conection(2)? [1] ' SETUP_CONTINUE
 
-if [[ $SETUP_CONTINUE == "1" ]]; then
-  ./install-alpine.sh
-else
+if [[ $SETUP_CONTINUE == "2" ]]; then
   source $PREFIX/etc/bash.bashrc
   echo -e "\n-> Use the following command to access Termux from your machine to continue the installation:\n       ssh $USER@$IP_ADDRESS -p 8022\n"
+else
+  ./install-alpine.sh
 fi
