@@ -2,7 +2,7 @@
 
 # On Termux terminal
 # Update, upgrade and install packages
-./upgrade-packages.sh
+./update-packages.sh
 pkg upgrade -y
 pkg install root-repo -y
 pkg install iproute2 openssh curl wget screen docker qemu-system-x86-64-headless qemu-utils -y
