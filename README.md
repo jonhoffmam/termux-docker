@@ -2,18 +2,18 @@
 
 ## Install
 
-### 1. Update, upgrade and install git package
+### 1. Install git and expect packages
 
 ```bash
-pkg update -y && pkg upgrade -y && pkg install git
+pkg install git -y && pkg install expect -y
 ```
 
 ### 2. Clone repository
 
 ```bash
 git clone https://github.com/jonhoffmam/termux-docker.git && \
-cd termux-docker && \
-chmod +x scripts/*.sh
+cd termux-docker/scripts && \
+chmod +x *.sh
 ```
 
 ### 3. And run
