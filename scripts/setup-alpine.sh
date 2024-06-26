@@ -65,6 +65,7 @@ create_answers() {
   iface eth0 inet dhcp
   hostname alpine
   "
+  DNSOPTS="-d google.com 8.8.8.8 8.8.4.4"
   TIMEZONEOPTS="$TIMEZONE"
   PROXYOPTS="none"
   APKREPOSOPTS="http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/main http://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/community"
