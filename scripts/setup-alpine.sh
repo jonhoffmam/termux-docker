@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/ash
 
 TIMEZONE="America/Sao_Paulo"
 KEYMAP="br"
@@ -95,12 +95,6 @@ if [ $MANUAL = false ]; then
 else
   setup-alpine
 fi
-
-
-apk update
-apk add docker
-
-service docker start
 
 poweroff
 exit
