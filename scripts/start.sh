@@ -18,9 +18,9 @@ screen -wipe &> /dev/null" >> $PREFIX/etc/bash.bashrc
 
 echo -e "\n# Verify and run SSHD
 if pgrep sshd &> /dev/null; then
-  echo '\\\n-> sshd running... (OK)'
+  echo -e '\\\n-> sshd running... (OK)'
 else
-  echo '\\\n-> sshd starting... (WAIT)'
+  echo -e '\\\n-> sshd starting... (WAIT)'
   sshd
 fi" >> $PREFIX/etc/bash.bashrc
 
