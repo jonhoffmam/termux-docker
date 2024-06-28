@@ -2,9 +2,15 @@
 
 ssh-keygen -t rsa -b 4096 -f $HOME/.ssh/id_alpine_rsa
 
-echo -e "\n# Aliases to run and connect SSH Alpine VM
-alias runAlpine=\$HOME/alpine/run_alpine.sh
-alias sshAlpine='ssh root@localhost -p 2222'" >> $PREFIX/etc/bash.bashrc
+cat << EOF > $HOME/.ssh/config
+Host alpine
+  HostName localhost
+  User root
+  IdentityFile ~/.ssh/id_alpine_rsa
+  Port 2222
+  ForwardAgent yes
+  Compression yes
+EOF
 
 # Create and access VM folder
 mkdir -p $HOME/alpine

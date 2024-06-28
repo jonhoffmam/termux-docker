@@ -1,6 +1,9 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # On Termux terminal
+
+chmod +x *.sh
+
 # Update, upgrade and install packages
 ./update-packages.sh
 pkg upgrade -y
@@ -29,7 +32,8 @@ read -rp $'\n-> Continue configuration on this terminal(1), or use ssh conection
 
 if [[ $SETUP_CONTINUE == "2" ]]; then
   source $PREFIX/etc/bash.bashrc
-  echo -e "\n-> Use the following command to access Termux from your machine to continue the installation:\n       ssh $USER@$IP_ADDRESS -p 8022\n"
+  echo -e "\n-> Use the following command to access Termux from your machine to continue the installation:"
+  echo -e "\tssh $USER@$IP_ADDRESS -p 8022\n"
 else
   ./install-alpine.sh
 fi

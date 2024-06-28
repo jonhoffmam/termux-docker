@@ -1,12 +1,17 @@
 #!/bin/ash
+#
+# Adapted from https://www.shellscript.sh/examples/getopt/
+#
+set -euo pipefail
 
+PASSWORD=""
 TIMEZONE="America/Sao_Paulo"
-KEYMAP="br"
+KEYMAP="br br"
 MANUAL=false
 EMPTY_PASSWORD=false
 
 main() {
-  parsing_options "$@"
+  parsing_options $@
   check_all_params
   setup
   reboot_system
@@ -17,37 +22,78 @@ red() {
 }
 
 help() {
-  echo "Usage: $0 [options]"
-  echo
-  echo "Options:"
-  echo "  -h, --help                      Show this help message"
-  echo "  -m, --manual                    Set the configuration manually"
-  echo "  -e, --empty                     Empty root password"
-  echo "  -p, --password <your_password>  Set the password"
-  echo "  -t, --timezone <your_timezone>  Set the time zone"
-  echo "  -k, --keymap <your_keymap>      Set the keymap"
-  echo
-  echo "Option -p cannot be used with options -e, -m."
-  echo
-  echo "Examples:"
-  echo "  $0 -m -e"
-  echo "  $0 -t 'America/Sao_Paulo' -p 'Password123' -k 'br'"
-  echo "  $0 --timezone 'America/Sao_Paulo' --password 'Password123' --keymap 'br'"
-  exit 1
+>&2 cat << EOF
+Usage: $0 [options]
+  Options:
+    -h, --help                      Show this help message
+    -m, --manual                    Set the configuration manually
+    -e, --empty                     Empty root password
+    -p, --password <your_password>  Set the password
+    -t, --timezone <your_timezone>  Set the time zone
+    -k, --keymap <your_keymap>      Set the keymap
+
+  Option -e cannot be used with option -p.
+  Option -p cannot be used with options -e, -m.
+  Option -m cannot be used with options -p, -t, -k.
+
+  Examples:
+    $0 -m -e
+    $0 -t 'America/Sao_Paulo' -p 'Password123' -k 'br'
+    $0 --timezone 'America/Sao_Paulo' --password 'Password123' --keymap 'br'
+EOF
+exit 1
 }
+
+args=$(getopt -a -o hmep:t:k: --longoptions help,manual,empty,password:,timezone:,keymap: -- "$@")
+eval set -- ${args}
+
 
 check_param() {
   declare -A PARAM
-  PARAM[VALUE]=$1
-  PARAM[NAME]=$2
+  PARAM[OPT]=$1
+  PARAM[ARG]=$2
   PARAM[EXAMPLE]=$3
-  
-  if [[ -z ${PARAM[VALUE]} ]]; then
-    echo -e "\n\t$(red [ERROR]) You must specify a ${PARAM[NAME]}!"
-    echo -e "\tExample:"
-    echo -e "\t\t $0 $key '${PARAM[EXAMPLE]}'\n"
+
+
+  if [[ ${PARAM[ARG]} == -* ]]; then
+    echo -e "\n\t$(red [ERROR]) Option '${PARAM[OPT]}' requires an argument!" >&2
+    echo -e "\tExample:" >&2
+    echo -e "\t\t $0 ${PARAM[OPT]} '${PARAM[EXAMPLE]}'\n" >&2
     exit 1
   fi
+  
+}
+
+parsing_options() {
+  while :
+  do
+    case $1 in
+      -h | --help)      help                    ; shift   ;;
+      -e | --empty)     EMPTY_PASSWORD=true     ; shift   ;;
+      -m | --manual)    MANUAL=true             ; shift   ;;
+      -k | --keymap)
+        check_param $1 $2 'us'
+        KEYMAP=$(echo "$2" | sed 's/\// /g')
+        shift 2
+        ;;
+      -t | --timezone)
+        check_param $1 $2 'America/New_York'
+        TIMEZONE=$2
+        shift 2
+        ;;
+      -p | --password)
+        check_param $1 $2 'password123'
+        PASSWORD=$2
+        shift 2
+        ;;
+      # -- means the end of the arguments; drop this, and break out of the while loop
+      --) shift; break ;;
+      *)
+        >&2 echo Unsupported option: $1
+        help
+        ;;
+    esac
+  done
 }
 
 check_all_params() {
@@ -72,46 +118,6 @@ check_all_params() {
     echo
     exit 1
   fi
-}
-
-parsing_options() {
-  while [[ $# -gt 0 ]]; do
-    key="$1"
-    case $key in
-      -e | --empty)
-        EMPTY_PASSWORD=true
-        ;;
-      -m | --manual)
-        MANUAL=true
-        ;;
-      -k | --keymap)
-        check_param "$2" "keymap" "us"
-        if [[ $(echo "$2" | wc -w) -eq 2 ]]; then
-          KEYMAP="$2"
-        else
-          KEYMAP="$2 $2"
-        fi
-        shift
-        ;;
-      -t | --timezone)
-        check_param "$2" "timezone" "America/Sao_Paulo"
-        TIMEZONE="$2"
-        shift
-        ;;
-      -p | --password)
-        check_param "$2" "password" "password123"
-        PASSWORD="$2"
-        shift
-        ;;
-      -h | --help)
-        help
-        ;;
-      *)
-        help
-        ;;
-    esac
-    shift
-  done
 }
 
 create_answers() {
@@ -173,4 +179,6 @@ reboot_system() {
   reboot
 }
 
-main "$@"
+main $@
+
+exit 0

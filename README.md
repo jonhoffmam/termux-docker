@@ -12,14 +12,26 @@ pkg install git -y && pkg install expect -y
 
 ```bash
 git clone https://github.com/jonhoffmam/termux-docker.git && \
-cd termux-docker/scripts && \
-chmod +x *.sh
+cd termux-docker/scripts
 ```
 
-### 3. And run
+### 3. Run to start
 
 ```bash
-./start.sh
+bash start.sh
+```
+
+### 4. Setup interfaces and dns
+
+```bash
+setup-interfaces -ar && \
+setup-dns -d google.com -n 8.8.8.8
+```
+
+### 5. Download setup-alpine script
+
+```bash
+wget https://raw.githubusercontent.com/jonhoffmam/termux-docker/main/scripts/setup-alpine.sh
 ```
 
 ## Access Termux via SSH
