@@ -99,7 +99,7 @@ parsing_options() {
 check_all_params() {
   # Check if setup is manually with predefined password
   # ./setup-alpine.sh -m -p 'password'
-  if [[ $MANUAL = true && $EMPTY_PASSWORD = false && -n $PASSWORD ]]; then
+  if [[ $MANUAL = true && $EMPTY_PASSWORD = false && -z "$PASSWORD" ]]; then
     echo -e "\n\t$(red [ERROR]) Unable to setup Alpine manually with predefined password!"
     echo -e "\tRemove predefined password to continue setup manually"
     echo "OR"
@@ -110,7 +110,7 @@ check_all_params() {
 
   # Check if setup has a predefined password and empty password flag
   # ./setup-alpine.sh -e -p 'password'
-  if [[ $EMPTY_PASSWORD = true && -n $PASSWORD ]]; then
+  if [[ $EMPTY_PASSWORD = true && -n "$PASSWORD" ]]; then
     echo -e "\n\t$(red [ERROR]) Unable to setup Alpine with predefined password and empty flag!"
     echo -e "\tRemove predefined password to continue setup without password"
     echo "OR"
@@ -131,8 +131,8 @@ auto eth0
 iface eth0 inet dhcp
 hostname alpine
 "
-DNSOPTS="-d google.com 8.8.8.8 8.8.4.4"
-TIMEZONEOPTS="$TIMEZONE"
+DNSOPTS="-d google.com -n 8.8.8.8"
+TIMEZONEOPTS="-z $TIMEZONE"
 PROXYOPTS="none"
 APKREPOSOPTS="-c -1"
 USEROPTS="alpine"
