@@ -24,7 +24,7 @@ if pgrep sshd &> /dev/null; then
   echo -e '\\\n-> sshd running... (OK)'
 else
   echo -e '\\\n-> sshd starting... (WAIT)'
-  sshd
+  sshd &> /dev/null
 fi" >> $PREFIX/etc/bash.bashrc
 
 IP_ADDRESS=$(ip route show | awk '{print $9}')
